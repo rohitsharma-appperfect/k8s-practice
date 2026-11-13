@@ -1,0 +1,31 @@
+
+apiVersion: v1
+kind: Pod
+metadata:
+  name: readiness-demo
+  labels:
+    app: readiness-demo
+
+spec:
+  containers:
+    - name: app
+      image: busybox:1.36
+      command:
+        - /bin/sh
+        - -c
+        - |
+          touch /tmp/ready
+          sleep 30
+          rm -f /tmp/ready
+          sleep 60
+          touch /tmp/ready
+          sleep 600
+
+      readinessProbe:
+        exec:
+          command:
+            - cat
+            - /tmp/ready
+        initialDelaySeconds: 5
+        periodSeconds: 5
+        failureThreshold: 1
